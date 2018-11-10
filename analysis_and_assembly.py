@@ -1,223 +1,10 @@
-"""
-
-The functions used to implement Lab 8 should be written here.
-As usual, you'll need to include a test suite as well as your well-commented
-functions.  In addition, you'll need to find any necessary code for doctest to
-work (see past assignments) and import any needed libraries yourself.  After all,
-other than this comment and a few tests below, this is a blank file!
-
-
-
-
-########## Part 1: test suite ##########
->>> dot_matrix("hello", "jello")
-array([[0, 0, 0, 0, 0],
-       [0, 1, 0, 0, 0],
-       [0, 0, 1, 1, 0],
-       [0, 0, 1, 1, 0],
-       [0, 0, 0, 0, 1]])
-
-# when len(seq) = 1:
->>> dot_matrix("h", "j")
-array([[0]])
-
->>> dot_matrix("h", "h")
-array([[1]])
-
-# when len(seq) = 2:
->>> dot_matrix("hj", "yn")
-array([[0, 0],
-       [0, 0]])
-
->>> dot_matrix("hj", "hn")
-array([[1, 0],
-       [0, 0]])
-
->>> dot_matrix("hj", "jn")
-array([[0, 0],
-       [1, 0]])
-
->>> dot_matrix("hj", "hj") # overlap
-array([[1, 0],
-       [0, 1]])
-       
-# when len(seq) =5, and there is an overlap:
->>> dot_matrix("abcde", "cdefg") # 3-char overlap (seq_a:front, seq_b:end) # seq_a is put in the front and seq_b comes after it
-array([[0, 0, 0, 0, 0],
-       [0, 0, 0, 0, 0],
-       [1, 0, 0, 0, 0],
-       [0, 1, 0, 0, 0],
-       [0, 0, 1, 0, 0]])
-
->>> dot_matrix("abcde", "defgc") # 2-char overlap (seq_a:front, seq_b:end)
-array([[0, 0, 0, 0, 0],
-       [0, 0, 0, 0, 0],
-       [0, 0, 0, 0, 1],
-       [1, 0, 0, 0, 0],
-       [0, 1, 0, 0, 0]])
-       
->>> dot_matrix("abcde", "bcdea") # 4-char overlap (seq_a:front, seq_b:end)
-array([[0, 0, 0, 0, 1],
-       [1, 0, 0, 0, 0],
-       [0, 1, 0, 0, 0],
-       [0, 0, 1, 0, 0],
-       [0, 0, 0, 1, 0]])
-       
->>> dot_matrix("bcdea", "abcde") # 4-char overlap (seq_a:end, seq_b:front)
-array([[0, 1, 0, 0, 0],
-       [0, 0, 1, 0, 0],
-       [0, 0, 0, 1, 0],
-       [0, 0, 0, 0, 1],
-       [1, 0, 0, 0, 0]])
-
->>> dot_matrix("bcdea", "aedcb") # 5-char reverse overlap 
-array([[0, 0, 0, 0, 1],
-       [0, 0, 0, 1, 0],
-       [0, 0, 1, 0, 0],
-       [0, 1, 0, 0, 0],
-       [1, 0, 0, 0, 0]])
-       
->>> dot_matrix("bcdea", "baaed") # 3-char reverse overlap 
-array([[1, 0, 0, 0, 0],
-       [0, 0, 0, 0, 0],
-       [0, 0, 0, 0, 1],
-       [0, 0, 0, 1, 0],
-       [0, 1, 1, 0, 0]])
-
->>> dot_matrix("bcdea", "deabc") # 3-char overlap (seq_a:front, seq_b:end) and 2-char overlap (seq_a:end, seq_b:front)
-array([[0, 0, 0, 1, 0],
-       [0, 0, 0, 0, 1],
-       [1, 0, 0, 0, 0],
-       [0, 1, 0, 0, 0],
-       [0, 0, 1, 0, 0]])
-
->>> dot_matrix("bcdea", "adebc") # 1-char overlap (seq_a:front, seq_b:end) and 2-char overlap (seq_a:end, seq_b:front)
-array([[0, 0, 0, 1, 0],
-       [0, 0, 0, 0, 1],
-       [0, 1, 0, 0, 0],
-       [0, 0, 1, 0, 0],
-       [1, 0, 0, 0, 0]])
-       
-########## Part 2: test suite ##########
-       
-A sample test for part 2 of the lab.  The dictionary output order is not
-guaranteed, so we test equality instead of directly testing the dictionary.
-
->>> amino_acids("tttttttggaga") == {'R': 1, 'W': 1, 'F': 2}
-True
-
->>> amino_acids("catttc") == {'H': 1, 'F': 1}
-True
-
->>> amino_acids("tttttttttttt") == {'F': 4}
-True
-
->>> amino_acids("tatcatgtatatgggcat") == {'Y': 2, 'H': 2, 'G': 1, 'V': 1}
-True
-
-########## Part 3: test suite ##########
-       
-A sample test for part 3 of the lab, run on a small set of test fragments.
-The final function should be able to run on the full set of fragments available
-in genome_lib.get_fragments().
-
-
->>> put_fragments_together(get_test_fragments())
-'ttttttggagacgcggg'
-
->>> put_fragments_together(['tttttt', 'ttttgg', 'tggaga', 'agacgc', 'cgcggg'])
-'ttttttggagacgcggg'
-
->>> put_fragments_together(['tttttt', 'tttttt', 'tttttt', 'tttttt', 'tttttt'])
-'tttttt'
-
->>> put_fragments_together(['ttagaaaa', 'aagctatt', 'ctgagatg', 'tattagct', 'gtatatgg'])
-'ttagaaaagctattagctgagatgtatatgg'
-
->>> put_fragments_together([])
-''
-
->>> len(put_fragments_together(get_fragments()))  # to get the length of the final fragment
-42321
-
->>> count_overlap("bcdea", "baaed") # test suite for the helper function count_overlap
-0
-
->>> count_overlap("tttct", "tttca")
-1
-
->>> count_overlap("gcgaa", "aggtt")
-1
-
->>> count_overlap("tatct", "tcgct")
-1
-     
->>> count_overlap("tatct", "ctgat")
-2
-
->>> count_overlap("ttttt", "ttaaa")
-2
-
->>> count_overlap("tatct", "tctat")
-3
-
->>> count_overlap("ttttt", "tttaa")
-3
-
->>> count_overlap("ttttt", "tttta")
-4
-
->>> count_overlap("atcgt", "tcgta")
-4
-  
->>> count_overlap("tatct", "tatct")
-5
-
->>> select_fragment('tttttt', ['ttttgg', 'tggaga', 'agacgc', 'cgcggg'], 6) # test suite for the helper function select_fragment
-'ttttgg'
-
->>> select_fragment('ttttttgg', ['agacgc', 'tggaga', 'cgcggg'], 6)
-'tggaga'
-
-"""
-
 from numpy import *
 from genome_lib import *
-#import traceback
-
-
-# make Python look in the right place for logic.py, or complain if it doesn't
-try:
-    import sys
-    import traceback
-    sys.path.append('/home/courses/python')
-    from logic import *
-except:
-    print "Can't find logic.py; if this happens in the CS teaching lab, tell your instructor"
-    print "   If you are using a different computer, add logic.py to your project"
-    print "   (You can download logic.py from http://www.cs.haverford.edu/resources/software/logic.py)"
-    sys.exit(1)
-
-# attempting to find error location
-try:
-    assert True
-    assert 7 == 7
-    assert 2 == 2
-except:
-    _,_, tb = sys.exec_info()
-    traceback.print_tb(tb)   # fixed format
-    tb_info = traceback.extract_tb(tb)
-    filename, line, func, text = tb_info[-1]
-    
-    print('An error occurred on line {} in statement {}'.format(line,text))
-    exit(1)
-
-
 
 '''
-# PART ONE
+Part 1: Generating dot matrices - dot matrices allow biologists to visually compare two DNA sequences to determine alignment
 '''
-#(a)   
+# this is a helpful function of dot_matrix()  
 def equal_character(a, b, answer, index_a):
     assert (type(a)==type(b)==type("a string"))
     assert (len(a)==len(b) and len(a) > 0)
@@ -236,6 +23,7 @@ def equal_character(a, b, answer, index_a):
         return equal_character(a, b, answer, index_a + 1) # move to next character of a    
     # postcondition: the entry at (index_a)th row and (index_b)th column change to 1 when a[index_a] == b[index_b].
 
+# dot_matrix() takes two DNA sequences and returns their dot matrix
 def dot_matrix(seq_a, seq_b):
     assert (type(seq_a)==type(seq_b)==type("a string")) # sequences are strings
     assert len(seq_a)==len(seq_b) # the lengths of two sequences should be equal and greater than zero
@@ -248,20 +36,10 @@ def dot_matrix(seq_a, seq_b):
     #               should be 0 if the ith character of the first sequence is not equal to the jth character of the second
     #               sequence and be 1 if these characters are equal. 
 
-#(b)
-'''
-# If there is an overlap between two sequences, first, 1 appears in the dot_matrix, and if there are more than one character
-# which overlap, there is a diagonal pattern of 1 from upper left to lower right at which the last 1 ends at the last row, and 
-# if this diagonal has 1 in the first column,seq_b is overlapping to the end of seq_a; if the diagonal has 1 in the last column, 
-# seq_a is overlapping to the end of seq_b; and if the diagonal starts and ends at the middle columns, there is only overlap in 
-# the middle of two sequences, but two sequences cannot add to the end of each other. And if the diagonal pattern of 1 starts from 
-# the upper right to the lower left, it means the reverse of a substring of one of the sequences matches the other. 
 
-# cooperator: Mallory Kastner
+       
 '''
-    
-'''
-# PART TWO
+Part 2: Converting from DNA sequences to amino acid abbreviation
 '''
 def dna_aa(dna, index, mydictionary):
     assert (isinstance(dna, str) and isinstance(index, int) and isinstance(mydictionary, dict))
@@ -292,7 +70,7 @@ def amino_acids(dna):
 
 
 '''
-# PART THREE
+Part 3: Merging DNA fragments together into a single sequence that most causes the fragments to overlap
 '''
 
 def count_overlap(fragment1, fragment2): 
@@ -353,27 +131,3 @@ def put_fragments_together(fragments):
     return sofar
     # postcondition: the answer is the shortest possible resulting sequence by overlapping the all the fragments.
  
-
- 
-
-
-
-
-
-
-                
-# The following gets the "doctest" system to check test cases in the documentation comments
-def _test():
-   
-    import doctest
-    return doctest.testmod()
-
-if __name__ == "__main__":
-    print "Running 'doctest' tests for graph coloring enumeration. These may take a little time..."
-    print " To use the graphical interface, run A_graphical_user_interface.py"
-    result = _test()
-    if result[0] == 0:
-        print "Congratulations! You have passed all" , result[1], "coloring enumeration tests"
-    else:
-        print "Rats!"   
-
