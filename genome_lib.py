@@ -93,14 +93,3 @@ def parse(filename):
             frag_str += line.strip()
     fragments.append(frag_str)
     return fragments
-
-# make doctest work:
-def _test():
-    import doctest
-    result = doctest.testmod()
-    if result[0] == 0:
-        print "Wahoo! Passed all", result[1], __file__.split('/')[-1], "tests!"
-    else:
-        print "Rats!"
-
-if __name__ == "__main__": _test()
